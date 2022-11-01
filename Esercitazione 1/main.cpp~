@@ -1,0 +1,236 @@
+/*******************************************************************************
+Laboratorio di Simulazione Numerica
+Studentessa: Sambruna Alessia 
+n matricola: 942397
+Esercitazione 1 
+*********************************************************************************/
+#include <iostream>
+#include <fstream>
+#include <string>
+#include "random.h"
+#include<cmath>
+#include<cstdlib>
+#include<vector>
+using namespace std;
+
+//function definition
+template <typename T> double error( vector<T> AV, vector<T> AV2, int n )
+{
+	if (n==0)
+	{
+		return 0 ; 
+	}
+	else{
+		return sqrt(((AV2[n] - pow(AV[n], 2))/n)); 
+	}; 	
+}; 
+
+
+
+//function_random_generator_setup
+
+//___________________________________
+//main
+//___________________________________
+int main (int argc, char *argv[])
+{
+//Variables for random methods-> contained in random.h
+   Random rnd;
+   int seed[4];
+   int p1, p2;
+   ifstream Primes("Primes");
+   if (Primes.is_open()){
+      Primes >> p1 >> p2 ;
+   } else cerr << "PROBLEM: Unable to open Primes" << endl;
+   Primes.close();
+
+   ifstream input("seed.in");
+   string property;
+   if (input.is_open()){
+      while ( !input.eof() ){
+         input >> property;
+         if( property == "RANDOMSEED" ){
+            input >> seed[0] >> seed[1] >> seed[2] >> seed[3];
+            rnd.SetRandom(seed,p1,p2);
+         }
+      }
+      input.close();
+   } else cerr << "PROBLEM: Unable to open seed.in" << endl;
+
+//Exercices
+
+/*Exercices 1.1: Test the Pseudo-Random Number generator by estimating: ⟨𝑟⟩=∫𝑟𝑑𝑟=1/2 on [0,1] Make a picture of the estimation of ⟨𝑟⟩ and its uncertainty */
+// variables 
+int M=100000  ;    // Total number of throws
+int N=100      ;   // Number of blocks
+int L=int(M/N)  ;   // Number of throws in each block, please use for M a multiple of N
+
+//averages vectors: vectors of N elements, one for each block
+vector <double> ave ;
+vector <double> av2 ;
+// progressive sums vectors: vectors of N elements, one for each block
+vector <double> sum_prog ; 
+vector <double> su2_prog ; 
+
+vector <double> err_prog ; 
+
+vector <double> r;  //vector with all the measurements
+vector <double> x; // vector with integer values from 0 to N blocks: number of throws at each progressive block
+
+//filling of the vector with the value of measurements
+for (int i = 0;  i < M ; i++)
+	r.push_back(rnd.Rannyu());
+
+for (int i = 0;  i < N ; i++)
+	x.push_back(i*L); 
+
+// calculation of the average on each block
+for (int i = 0 ; i < N; i++)
+{
+	double sum = 0 ; 
+// calculate the average on the measurements on the block 
+	for (int j = 0 ; j < L; j++)
+	{
+		int k = j+i*L; // taking into account that 
+		sum = sum + r[k]; 
+	}
+	ave.push_back(sum/L ); // each block has a dimention of L 
+	av2.push_back(pow(ave[i], 2));	
+}; 
+	
+//for each block I have a measurement -> use these measurement to calculate the mean
+for (int i = 0 ; i <N; i ++)
+{
+	double sum = 0 ; 
+	double sum2 = 0 ; 
+	for ( int j = 0 ; j < i+1; j ++)
+	{
+		sum += ave[j];  
+        sum2 += av2[j]; 				
+	};
+	
+	sum_prog.push_back(sum/(i+1)) ;
+	su2_prog.push_back(sum2/(1+i)); 
+	err_prog.push_back( error(sum_prog,su2_prog,i)) ; 
+}; 
+
+// Cumulative square average
+
+   
+	
+// Print a file number of throws ave[j]-0.5 err_prog[j]
+	ofstream out_1 ("Exercise_1.1_values.dat") ; 
+	if (!out_1) 
+		cerr << "Errore file output\n" ;
+
+	for (int i = 0 ; i <N ; i ++)
+	{
+		out_1<< i*L << " " << (sum_prog[i] - 0.5) << " " << err_prog[i] << endl ;  
+	}
+
+	out_1.close() ; 
+// end exercise 1.1
+
+// exercise 1.2:𝜎2=∫(𝑟−1/2)^2𝑑𝑟=1/12 . Make a picture of the estimation of  𝜎2  and its uncertainty 
+
+//averages vectors: vectors of N elements, one for each block
+vector <double> std ;
+vector <double> std2 ;
+	
+
+// progressive sums vectors: vectors of N elements, one for each block
+vector <double> prog_std ; 
+vector <double> prog_std2 ; 
+
+// calculation 
+for (int i = 0 ; i < N ; i ++)
+{
+	double sum = 0 ; 
+// calculate the average on the measurements on the block 
+	for (int j = 0 ; j < L; j++)
+	{
+		int k = j+i*L; 
+		sum += pow(r[k]-0.5, 2); 
+	}
+	std.push_back(sum/L ); 
+	std2.push_back(pow(std[i], 2));
+}
+
+	for (int i = 0 ; i <N; i ++)
+	{
+		double sum = 0 ; 
+		double sum2 = 0 ; 
+		for ( int j = 0 ; j < i+1; j ++)
+		{
+			sum += std[j];  
+	        sum2 += std2[j]; 				
+		};
+		
+		prog_std.push_back(sum/(i+1)) ;
+		prog_std2.push_back(sum2/(i+1)); 
+	}; 
+
+vector <double> err_prog_std ; 
+for(int i = 0; i < N; i ++)
+	err_prog_std.push_back( error(prog_std,prog_std2,i)) ;  
+
+
+// Print a file number of throws ave[j]-0.5 err_prog[j]
+	ofstream out_2 ("Exercise_1.2_values.dat") ; 
+	if (!out_2) 
+		cerr << "Errore file output\n" ;
+
+	for (int i = 0 ; i <N ; i ++)
+	{
+		out_2<< i*L << " " << prog_std[i]-double(1/12) << " " << err_prog_std[i] << endl ;  
+	}
+
+   out_2.close() ; 
+
+
+//Esercizio 1.3 :
+
+/*
+Domande sull'esercizio :
+- è corretto?
+- Come valcolare l'errore sul chi quadro ? 
+- Basta stampare il valore del chi quadro come risultato ? 
+- è normale che il risultato sia sempre lo stesso ? 
+*/
+//Divide  [0,1]  into  𝑀  identical sub-intervals and implement the  𝜒2  test. 
+
+double chi_quad = 0  ;
+M = 100 ; 
+int n_tot = 10000 ; 
+// estrmi del jesimo intervallo da analizzare 
+double a = 0 ; 
+double b = 1 ; 
+int ni = 0 ; 
+
+vector <int> n_throws; // vector of the "measured" throws 
+
+// per ogni intervallo [(m-1)/M, m/M]
+for (int m = 1; m <= M; m++) 
+{
+	ni = 0 ; 
+	int n_exp = n_tot/M ; 
+	a = double(m-1)/M ;  
+	b = double(m)/M ; 
+	
+	// per ciascun intervallo si fa un test di 10^4 tiri
+	for( int i = 0 ; i < n_tot; i++)
+	{
+		double temp  = rnd.Rannyu();
+		if (temp < b and temp >= a) ni++; 
+	}
+	
+	n_throws.push_back(ni) ;
+	chi_quad+= pow(ni - n_exp, 2)/n_exp ;  
+}
+
+cout << "Valore del Chi quadro = " << chi_quad << endl ; 
+
+// end
+   rnd.SaveSeed();
+   return 0;
+}
