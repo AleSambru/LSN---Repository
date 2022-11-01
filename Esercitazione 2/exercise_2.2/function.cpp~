@@ -1,0 +1,84 @@
+#include <iostream>
+#include <cmath>
+#include <fstream>
+#include <string>
+#include <vector>
+#include "random.h"
+#include "function.h"
+
+using namespace std ; 
+
+
+
+/*
+Function to setup the Random Generator 
+*/
+void random_setup(Random &rnd)//function_random_generator_setup
+{
+
+	int seed[4];
+   	int p1, p2;
+   	ifstream Primes("Primes");
+   	if (Primes.is_open()){
+      Primes >> p1 >> p2 ;
+   	} else cerr << "PROBLEM: Unable to open Primes" << endl;
+   	Primes.close();
+
+   	ifstream input("seed.in");
+   	string property;
+   	if (input.is_open()){
+      	while ( !input.eof() ){
+         input >> property;
+         if( property == "RANDOMSEED" ){
+            input >> seed[0] >> seed[1] >> seed[2] >> seed[3];
+            rnd.SetRandom(seed,p1,p2);
+         }
+      }
+      input.close();
+   } else cerr << "PROBLEM: Unable to open seed.in" << endl;
+};
+
+
+
+
+
+
+  	void Position::discrete_step (Random &rnd, double a = 1)
+  	{
+  	
+  		v = rnd.Rannyu() ;  // random number to define the verse "Positive/negative" of the step
+  		d = rnd.Rannyu(0, 3) ; // random number to define the direction of the step
+  		
+  		if (v < 0.5) 
+  		{	
+  			bool vs = true ; // positive step 
+  			if (d <1)
+  				step_x (a, vs) ; 
+  			else if(d < 2 and d >=1) 
+  				step_y (a , vs);  
+  			else if (d < 3 and d >= 2) 
+  				step_z (a, vs) 
+  			else cout << "Error in the random generator : check !\n" ; 	
+  		} else if (v >= 0.5)
+  		{	
+  			bool vs = false ; // negative step  
+  			if (d <1)
+  				step_x (a, vs) ; 
+  			else if(d < 2 and d >=1) 
+  				step_y (a , vs);  
+  			else if (d < 3 and d >= 2) 
+  				step_z (a, vs) 
+  			else cerr << "Error in the random generator : check !\n" ; 	
+  		} else 
+  		{
+  			cerr << "Error in the random generator : check !\n" ; 	
+  		}
+   	
+  	}
+  	
+  	
+  	
+  	
+  	
+  	
+  	
