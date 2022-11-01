@@ -1,0 +1,22 @@
+2.0
+50
+1.0
+0.0
+1
+400
+1000
+0.5
+3.0
+10
+
+
+  ReadInput >> temp;
+  ReadInput >> nspin;
+  ReadInput >> J;
+  ReadInput >> h;
+  ReadInput >> metro; 1 metropolis 
+  ReadInput >> nblk;
+  ReadInput >> nstep;
+  ReadInput >> temp_in;
+  ReadInput >> temp_fin
+  ReadInput >> n_temp 
