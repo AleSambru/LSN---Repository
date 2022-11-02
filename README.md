@@ -6,6 +6,8 @@
 
 In this file I give an overview of the content of the folder "Simulazione Numerica". 
 In the folder it has been created a folder for each exercise.
+For each exercises I've created a notebook describing the exercises and the results called "SambrunaA_LSN_Exercises_n.ipynb" where n is the number of exercise. 
+
 Some exercises have been divided into sub-exercises and for each I've created a subfolder deditated. 
 
 	- Esercitazione 1: 
@@ -19,6 +21,8 @@ Some exercises have been divided into sub-exercises and for each I've created a 
 	- Esercitazione 4: Molecolar Dynamics
 	- Esercitazione 6: Ising Model 1D simulation
 	- Esercitazione 7: Monte Carlo Simulation - Metropolis Algorithm
+		-Exercise_7.1_2: Preliminary Outputs
+		-Exercise_2.3_4: Simulation
 	- Esercitazione 8: Search of the Ground State of a quantum system 
 	- Esercitazione 9: The Problem of the Travelling Saleman - Genetics Algoritm
 	- Esercitazione 10: The Problem of the Travelling Saleman - Genetics Algoritm + MPI - Parallel Program
