@@ -1,0 +1,19 @@
+1
+0
+0.8
+108
+1.1
+2.2
+0.11
+100
+5000
+
+  ReadInput >> iNVET; 0=MD(NVE) 1=MC(NVT)
+  ReadInput >> restart;
+  ReadInput >> temp; 1.5414 (MD) 0.8 (MC) 
+  ReadInput >> npart;
+  ReadInput >> rho;
+  ReadInput >> rcut;
+  ReadInput >> delta; 0.11/0.0005
+  ReadInput >> nblk; 100
+  ReadInput >> nstep;
